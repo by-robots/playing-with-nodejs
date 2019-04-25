@@ -1,3 +1,3 @@
-# Playing With Node JS
+# CRUD
 
-See branches for different excercises.
+Working through [The Node Beginner Book](https://www.nodebeginner.org/).
