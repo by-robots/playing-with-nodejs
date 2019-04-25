@@ -1,3 +1,3 @@
-# Playing With Node JS
+# A Modern Classic
 
-See branches for different excercises.
+`node hello-world.js`
