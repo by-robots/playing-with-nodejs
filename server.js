@@ -1,19 +1,19 @@
 const http = require('http')
-const url  = require('url')
+const url = require('url')
 
 /**
  * Start the HTTP server.
  *
  * @callback route Callback to handle the app's routing.
  */
-function start(route) {
+function start (route) {
   /**
    * Handles an HTTP request.
    *
    * @param {Object} request  The request's details.
    * @param {Object} response The response object.
    */
-  function handleRequest(request, response) {
+  function handleRequest (request, response) {
     const pathname = url.parse(request.url).pathname
     route(pathname)
 
