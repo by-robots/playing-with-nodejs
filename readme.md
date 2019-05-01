@@ -1,3 +1,5 @@
-# CRUD
+# Basic CRUD
 
-Working through [The Node Beginner Book](https://www.nodebeginner.org/).
+A simple CRUD app.
+
+Start with `node index.js`.
