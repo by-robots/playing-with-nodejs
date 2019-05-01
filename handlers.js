@@ -8,10 +8,12 @@ const exec = require('child_process').exec
 function start (response) {
   console.log('Request handler `start` was called.')
 
-  // TODO: Handle errors
   exec('ls -lah', (error, stdout, stderr) => {
-    response.writeHead(200, { 'Content-Type': 'text/plain' })
-    response.write(stdout)
+    const status = error ? 500 : 200
+    const body = error ? `Something went wrong: ${error.stack}` : stdout
+
+    response.writeHead(status, { 'Content-Type': 'text/plain' })
+    response.write(body)
     response.end()
   })
 }
