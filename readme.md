@@ -1,6 +1,8 @@
 # Playing With Node JS
 
-See branches for different excercises.
+Very basic Test Driven Development.
 
-1. [Hello, world!](https://github.com/by-robots/playing-with-nodejs/tree/01-hello-world)
-2. [Basic CRUD](https://github.com/by-robots/playing-with-nodejs/tree/02-basic-crud)
+``` bash
+npm install
+./node_modules/jasmine-node/bin/jasmine-node spec/greetSpec.js
+```
