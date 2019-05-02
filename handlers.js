@@ -1,32 +1,46 @@
-const exec = require('child_process').exec
+const querystring = require('querystring')
 
 /**
  * The root route.
  *
  * @param {Object} response Response object for responding to the request.
+ * @param {String} postData
  */
-function start (response) {
+function start (response, postData) {
   console.log('Request handler `start` was called.')
 
-  exec('ls -lah', (error, stdout, stderr) => {
-    const status = error ? 500 : 200
-    const body = error ? `Something went wrong: ${error.stack}` : stdout
+  // TODO: Remove view code from controller code.
+  const body = `<!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+    </head>
+    <body>
+      <form action="/upload" method="post">
+        <textarea name="text" rows="20" cols="60"></textarea>
+        <input type="submit" value="Submit text"/>
+      </form>
+    </body>
+    </html>`
 
-    response.writeHead(status, { 'Content-Type': 'text/plain' })
-    response.write(body)
-    response.end()
-  })
+  response.writeHead(200, { 'Content-Type': 'text/html' })
+  response.write(body)
+  response.end()
 }
 
 /**
  * The upload route.
  *
  * @param {Object} response Response object for responding to the request.
+ * @param {String} postData Received data.
  */
-function upload (response) {
+function upload (response, postData) {
   console.log('Request handler `upload` was called.')
+
+  const postedText = querystring.parse(postData).text
+
   response.writeHead(200, { 'Content-Type': 'text/plain' })
-  response.write('Hello upload!')
+  response.write(`You sent: ${postedText}`)
   response.end()
 }
 
