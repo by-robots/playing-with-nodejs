@@ -4,13 +4,13 @@
  * @param {Object} handle   Map of route => handlers.
  * @param {String} pathname The pathname of the current request.
  * @param {Object} response For responding to the request.
- * @param {String} postData Received data.
+ * @param {String} request  The request object.
  */
-function route (handle, pathname, response, postData) {
+function route (handle, pathname, response, request) {
   console.log(`About to route a request for ${pathname}`)
 
   if (typeof handle[pathname] === 'function') {
-    handle[pathname](response, postData)
+    handle[pathname](response, request)
     return
   }
 

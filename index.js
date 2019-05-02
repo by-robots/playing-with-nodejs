@@ -4,6 +4,7 @@ const requestHandlers = require('./handlers')
 
 const handle = {}
 handle['/'] = requestHandlers.start
+handle['/show'] = requestHandlers.show
 handle['/start'] = requestHandlers.start
 handle['/upload'] = requestHandlers.upload
 

@@ -1,12 +1,12 @@
-const querystring = require('querystring')
+const fs = require('fs')
+const formidable = require('formidable')
 
 /**
  * The root route.
  *
  * @param {Object} response Response object for responding to the request.
- * @param {String} postData
  */
-function start (response, postData) {
+function start (response) {
   console.log('Request handler `start` was called.')
 
   // TODO: Remove view code from controller code.
@@ -16,9 +16,9 @@ function start (response, postData) {
       <meta charset="utf-8"/>
     </head>
     <body>
-      <form action="/upload" method="post">
-        <textarea name="text" rows="20" cols="60"></textarea>
-        <input type="submit" value="Submit text"/>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="upload"/>
+        <input type="submit" value="Upload"/>
       </form>
     </body>
     </html>`
@@ -32,17 +32,44 @@ function start (response, postData) {
  * The upload route.
  *
  * @param {Object} response Response object for responding to the request.
- * @param {String} postData Received data.
+ * @param {String} request  The request object.
  */
-function upload (response, postData) {
+function upload (response, request) {
   console.log('Request handler `upload` was called.')
 
-  const postedText = querystring.parse(postData).text
+  const form = new formidable.IncomingForm()
+  form.parse(request, (error, fields, files) => {
+    if (error) {
+      console.log(`There was an error processing the upload: ${error.stack}`)
+    }
 
-  response.writeHead(200, { 'Content-Type': 'text/plain' })
-  response.write(`You sent: ${postedText}`)
-  response.end()
+    fs.rename(files.upload.path, '/tmp/test.png', (error) => {
+      // Handle a possible issue on Windows systems that may crop up when
+      // attempting to rename the file to a file that already exists.
+      if (error) {
+        fs.unlink('/tmp/test.png')
+        fs.rename(files.upload.path, '/tmp/test.png')
+      }
+    })
+
+    response.writeHead(200, { 'Content-Type': 'text/html' })
+    response.write('<img src="/show" alt=""/>')
+    response.end()
+  })
 }
 
+/**
+ * Show the uploaded file.
+ *
+ * @param {Object} response
+ */
+function show (response) {
+  console.log('Request handler `show` was called.')
+
+  response.writeHead(200, { 'Content-Type': 'image/png' })
+  fs.createReadStream('/tmp/test.png').pipe(response)
+}
+
+exports.show = show
 exports.start = start
 exports.upload = upload

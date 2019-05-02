@@ -10,20 +10,7 @@ const url = require('url')
 function start (route, handle) {
   http.createServer((request, response) => {
     const pathname = url.parse(request.url).pathname
-    let postData = ''
-
-    request.setEncoding('utf8')
-
-    // Receive a chunk of POST data. Yummy.
-    request.addListener('data', (postDataChunk) => {
-      postData += postDataChunk
-      console.log(`Received POST data chunk: ${postDataChunk}.`)
-    })
-
-    // All data has been received.
-    request.addListener('end', () => {
-      route(handle, pathname, response, postData)
-    })
+    route(handle, pathname, response, request)
   }).listen(1337)
 }
 
