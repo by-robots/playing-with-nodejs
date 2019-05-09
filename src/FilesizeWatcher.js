@@ -1,6 +1,8 @@
 'use strict'
 
 const fs = require('fs')
+const util = require('util')
+const EventEmitter = require('events').EventEmitter
 
 /**
  * Watches a file for filesize changes.
@@ -8,13 +10,12 @@ const fs = require('fs')
  * @param {String} path Path to the file to watch.
  */
 const FilesizeWatcher = function (path) {
-  const self = this
-  self.callbacks = {}
+  var self = this
 
   // Path must be absolute, so check it starts with a slash.
   if (/^\//.test(path) === false) {
     process.nextTick(() => {
-      self.callbacks['error']('Path does not start with a slash')
+      self.emit('error', 'Path does not start with a slash')
     })
 
     return
@@ -38,28 +39,21 @@ const FilesizeWatcher = function (path) {
 
       // File got bigger.
       if (stats.size > self.lastFilesize) {
-        self.callbacks['grew'](stats.size - self.lastFilesize)
+        self.emit('grew', stats.size - self.lastFilesize)
         self.lastFilesize = stats.size
       }
 
       // File got smaller.
       if (stats.size < self.lastFilesize) {
-        self.callbacks['shrank'](self.lastFilesize - stats.size)
+        self.emit('shrank', self.lastFilesize - stats.size)
         self.lastFilesize = stats.size
       }
     })
   }, 1000)
 }
 
-/**
- * Add the on method which will allow us to watch for events being triggered.
- *
- * @param {String} eventType The event name.
- * @param {Callback} callback The code to execute when the event fires.
- */
-FilesizeWatcher.prototype.on = function (eventType, callback) {
-  this.callbacks[eventType] = callback
-}
+// Make FilesizeWatcher inherit events.EventEmitter
+util.inherits(FilesizeWatcher, EventEmitter)
 
 /**
  * Stop periodically checking for filesize changes.
