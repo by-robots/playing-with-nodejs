@@ -10,12 +10,12 @@ const EventEmitter = require('events').EventEmitter
  * @param {String} path Path to the file to watch.
  */
 const FilesizeWatcher = function (path) {
-  var self = this
+  const self = this
 
   // Path must be absolute, so check it starts with a slash.
   if (/^\//.test(path) === false) {
     process.nextTick(() => {
-      self.emit('error', 'Path does not start with a slash')
+      this.emit('error', 'Path does not start with a slash')
     })
 
     return
@@ -27,7 +27,7 @@ const FilesizeWatcher = function (path) {
       // TODO: Handle error.
     }
 
-    self.lastFilesize = stats.size
+    this.lastFilesize = stats.size
   })
 
   // Ever second check for a filesize change.
@@ -38,15 +38,15 @@ const FilesizeWatcher = function (path) {
       }
 
       // File got bigger.
-      if (stats.size > self.lastFilesize) {
-        self.emit('grew', stats.size - self.lastFilesize)
-        self.lastFilesize = stats.size
+      if (stats.size > this.lastFilesize) {
+        this.emit('grew', stats.size - this.lastFilesize)
+        this.lastFilesize = stats.size
       }
 
       // File got smaller.
-      if (stats.size < self.lastFilesize) {
-        self.emit('shrank', self.lastFilesize - stats.size)
-        self.lastFilesize = stats.size
+      if (stats.size < this.lastFilesize) {
+        this.emit('shrank', this.lastFilesize - stats.size)
+        this.lastFilesize = stats.size
       }
     })
   }, 1000)
