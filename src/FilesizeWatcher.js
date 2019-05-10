@@ -10,8 +10,6 @@ const EventEmitter = require('events').EventEmitter
  * @param {String} path Path to the file to watch.
  */
 const FilesizeWatcher = function (path) {
-  const self = this
-
   // Path must be absolute, so check it starts with a slash.
   if (/^\//.test(path) === false) {
     process.nextTick(() => {
@@ -31,7 +29,7 @@ const FilesizeWatcher = function (path) {
   })
 
   // Ever second check for a filesize change.
-  self.interval = setInterval(() => {
+  this.interval = setInterval(() => {
     fs.stat(path, (err, stats) => {
       if (err) {
         // TODO: Handle error.
