@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <title>Live Stock Price Ticker</title>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+  <script>
+    $(() => {
+      const socket = io()
+      socket.on('stock price update', (stockprice) => {
+        $('#stockprice').text(stockprice)
+      })
+    })
+  </script>
+</head>
+<body>
+  <p>Stock price: <span id="stockprice">no data yet</span></p>
+</body>
+</html>
