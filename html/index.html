@@ -10,17 +10,45 @@
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
-
-  <script>
-    $(() => {
-      const socket = io()
-      socket.on('stock price update', (stockprice) => {
-        $('#stockprice').text(stockprice)
-      })
-    })
-  </script>
 </head>
 <body>
   <p>Stock price: <span id="stockprice">no data yet</span></p>
+  <button id="sharebutton">Share</button>
+
+  <hr/>
+
+  <strong>Stock buy transactions by other users:</strong>
+  <ul id="sharedstockprices"></ul>
+
+  <script>
+    $(document).ready(() => {
+      const socket = io()
+
+      /**
+       * Server had emitted a stock price changed. Update the HTML with the
+       * received data.
+       */
+      socket.on('stock price update', (stockprice) => {
+        $('#stockprice').text(stockprice)
+      })
+
+      /**
+       * A user has shared a stock price and the server has sent it to all
+       * clients.
+       */
+      socket.on('stock price shared', (sharedStockprice) => {
+        $('#sharedstockprices').prepend(`<li>${sharedStockprice}</li>`)
+      })
+
+      /**
+       * The user has clicked the share button - emit an event and send the
+       * stock price to the server.
+       */
+      $('#sharebutton').click((e) => {
+        e.preventDefault()
+        socket.emit('stock price share', $('#stockprice').text())
+      })
+    })
+  </script>
 </body>
 </html>
